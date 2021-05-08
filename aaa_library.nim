@@ -309,6 +309,7 @@ proc xgcd(a,b:int):(int,int,int)=
     (y0,y1)=(y1,y0-q*y1)
   return (a,x0,y0)
 
+# modの逆元
 proc modinv(a,m:int):int=
   var (g,x,y)=xgcd(a,m)
   if g!=1:
@@ -316,6 +317,7 @@ proc modinv(a,m:int):int=
   else:
     return x mod m
 
+# 中国剰余定理
 proc crt(b:seq[int],m:seq[int]):(int,int)=
   var
     r=0
@@ -412,7 +414,10 @@ proc ford_fulkerson():int=
         return
       else:
         result+=f
-  
+
+
+# ワーシャルフロイド法
+# V^3
 proc warshall_floyd()=
   var
     d:seq[seq[int]]
@@ -423,6 +428,27 @@ proc warshall_floyd()=
         d[i][j]=min(d[i][j],d[i][k]+d[k][j])
 
 
+# ダイクストラ法
+
+proc dijkstra(s:int)=
+  dist.fill(int.high.div(4))
+  dist[s]=0
+  var q = initHeapQueue[(int,int)]()
+  q.push((0,s))
+  while q.len>0:
+    var
+      (cost,p)=q.pop()
+    if cost > dist[p]:
+      continue
+    for nidx in 0..<es[p].len:
+      var
+        nxt = es[p][nidx]
+        cst = costs[p][nidx]
+      if dist[nxt] > dist[p]+cst:
+        dist[nxt] = dist[p]+cst
+        q.push((dist[nxt],nxt))
+
+# 
 proc bellman_ford():bool=
   var
     n:int
